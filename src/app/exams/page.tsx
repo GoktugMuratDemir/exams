@@ -1,15 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Button from "./components/ui/button";
 import Modal from "./components/ui/modal";
 
 export default function ExamsPage() {
   const [testModalOpen, setTestModalOpen] = useState(false);
+  const router = useRouter();
 
   const handleConfirmTest = () => {
-    // Test başlatma işlemi burada yapılabilir
-    alert("IELTS test başlatılıyor...");
+    // Simulation sayfasına yönlendir
+    router.push("/exams/simulation");
     setTestModalOpen(false);
   };
 
