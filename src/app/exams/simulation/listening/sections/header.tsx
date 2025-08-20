@@ -118,7 +118,7 @@ const Header = ({ initialTime = 32 * 60, onSubmit }: HeaderProps) => {
   };
 
   return (
-    <div className="bg-white border-b border-gray-200 px-6 py-4">
+    <div className="bg-white border-b border-gray-200 px-6 py-4 sticky top-0 z-50">
       <div className="flex items-center justify-between">
         {/* Left Icon */}
         <div className="flex items-center">
