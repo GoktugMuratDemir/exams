@@ -2,6 +2,7 @@
 
 import Header from "./sections/header";
 import Questions1To5Section from "./sections/questions-1-to-5-section";
+import Questions6Section from "./sections/questions-6-section";
 
 export default function ListeningPage() {
   const handleSubmit = () => {
@@ -42,6 +43,11 @@ export default function ListeningPage() {
             </div>
 
             <Questions1To5Section />
+
+            {/* Questions 6 Section */}
+            <div className="mt-12">
+              <Questions6Section />
+            </div>
           </div>
         </div>
       </div>
