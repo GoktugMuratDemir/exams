@@ -1,9 +1,10 @@
 "use client";
 
-import Header from "./sections/header";
+import Header from "./components/header";
 import Questions1To5Section from "./sections/questions-1-to-5-section";
 import Questions6Section from "./sections/questions-6-section";
 import Questions7To10Section from "./sections/questions-7-to-10-section";
+import Footer from "./components/footer";
 
 export default function ListeningPage() {
   const handleSubmit = () => {
@@ -57,6 +58,7 @@ export default function ListeningPage() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
