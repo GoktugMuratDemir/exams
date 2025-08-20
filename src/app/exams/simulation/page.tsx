@@ -97,10 +97,10 @@ export default function SimulationPage() {
     <div className="min-h-screen bg-white">
       {/* Minimal Header */}
       <div className="bg-white border-b border-gray-200">
-        <div className="px-6 py-4">
+        <div className="px-3 py-2">
           <div className="flex items-center justify-between">
             {/* Left Icon */}
-            <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
+            <div className="w-7 h-7 bg-blue-600 rounded flex items-center justify-center">
               <svg
                 className="w-5 h-5 text-white"
                 fill="currentColor"
@@ -112,10 +112,10 @@ export default function SimulationPage() {
 
             {/* Right Exit Button */}
             <button
-              className="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+              className="flex items-center space-x-2 px-2.5 py-1 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
               onClick={handleExit}
             >
-              <span className="text-sm font-medium">Exit</span>
+              <span className="text-xs font-medium">Exit</span>
               <svg
                 className="w-4 h-4"
                 fill="none"
@@ -135,14 +135,14 @@ export default function SimulationPage() {
       </div>
 
       {/* Main Content */}
-      <div className="flex items-center justify-center px-4 pt-12">
-        <div className="max-w-2xl w-full">
+      <div className="flex items-center justify-center px-3 pt-8">
+        <div className="max-w-4xl w-full">
           {/* Test Selection Title */}
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <div className="text-center mb-4">
+            <h1 className="text-2xl font-bold text-gray-900 mb-1">
               IELTS ACADEMIC TEST
             </h1>
-            <p className="text-lg text-gray-600">
+            <p className="text-xs text-gray-600">
               Choose the module you want to practice
             </p>
           </div>

@@ -18,24 +18,24 @@ export default function ListeningPage() {
       <Header onSubmit={handleSubmit} />
 
       {/* Main Content Area */}
-      <div className="p-6">
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-lg shadow-sm p-8">
+      <div className="p-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="bg-white rounded-2xl shadow p-4">
             {/* Part 1 Header */}
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Part 1</h1>
+            <h1 className="text-2xl font-bold text-gray-900 mb-1">Part 1</h1>
 
             {/* Questions 1-5 Header */}
-            <h2 className="text-2xl font-semibold text-cyan-500 mb-8">
+            <h2 className="text-xl font-semibold text-cyan-500 mb-4">
               Questions 1-5
             </h2>
 
             {/* Main Content Text */}
-            <div className="space-y-6">
-              <p className="text-gray-700 text-lg leading-relaxed italic">
+            <div className="space-y-3">
+              <p className="text-gray-700 text-base leading-relaxed italic">
                 The housing officer takes some details from the girl.
               </p>
 
-              <p className="text-gray-700 text-lg leading-relaxed italic">
+              <p className="text-gray-700 text-base leading-relaxed italic">
                 Complete the following form with{" "}
                 <span className="text-red-500 font-bold">
                   NO MORE THAN THREE WORDS AND/OR A NUMBER
@@ -47,12 +47,12 @@ export default function ListeningPage() {
             <Questions1To5Section />
 
             {/* Questions 6 Section */}
-            <div className="mt-12">
+            <div className="mt-6">
               <Questions6Section />
             </div>
 
             {/* Questions 7-10 Section */}
-            <div className="mt-12">
+            <div className="mt-6">
               <Questions7To10Section />
             </div>
           </div>

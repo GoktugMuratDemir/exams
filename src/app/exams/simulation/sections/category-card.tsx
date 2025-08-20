@@ -323,7 +323,7 @@ const CategoryCard = ({ items, onItemSelect }: CategoryCardProps) => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {items.map((item) => {
         const colors = getCategoryColors(item.id, item.isActive);
         const tutorialNumber = getTutorialNumber(item.id);
@@ -332,12 +332,12 @@ const CategoryCard = ({ items, onItemSelect }: CategoryCardProps) => {
         return (
           <Card key={item.id}>
             <div
-              className={`text-center p-8 transition-all duration-300 bg-white ${
+              className={`text-center p-5 transition-all duration-300 bg-white ${
                 item.isActive ? "shadow-md" : "cursor-not-allowed opacity-75"
               }`}
             >
               {/* Header with Icon and Title */}
-              <div className="flex items-center justify-center mb-6">
+              <div className="flex items-center justify-center mb-5">
                 <div
                   className="rounded-full p-4 mr-4"
                   style={{ backgroundColor: colors.primary }}
@@ -346,7 +346,7 @@ const CategoryCard = ({ items, onItemSelect }: CategoryCardProps) => {
                 </div>
                 <div className="text-left">
                   <h2
-                    className="text-2xl font-semibold"
+                    className="text-xl font-semibold"
                     style={{ color: colors.text }}
                   >
                     {item.title}
@@ -356,7 +356,7 @@ const CategoryCard = ({ items, onItemSelect }: CategoryCardProps) => {
 
               {/* Description */}
               <p
-                className={`text-base leading-relaxed max-w-2xl mx-auto mb-8 ${
+                className={`text-sm leading-relaxed max-w-3xl mx-auto mb-5 ${
                   item.isActive ? "text-gray-600" : "text-gray-400"
                 }`}
               >
@@ -364,9 +364,9 @@ const CategoryCard = ({ items, onItemSelect }: CategoryCardProps) => {
               </p>
 
               {/* Video Container */}
-              <div className="rounded-xl p-6 mb-6 bg-gray-50">
+              <div className="rounded-xl p-3.5 mb-5 bg-gray-50">
                 <div
-                  className="relative bg-white rounded-xl overflow-hidden shadow-sm mb-6"
+                  className="relative bg-white rounded-xl overflow-hidden shadow-sm mb-5"
                   style={{
                     aspectRatio: "16/9",
                     position: "relative",

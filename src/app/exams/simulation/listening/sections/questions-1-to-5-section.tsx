@@ -88,7 +88,7 @@ const Questions1To5Section = () => {
 
   const renderInput = (question: Question) => {
     const baseClasses =
-      "w-full px-3 py-2 border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm";
+      "w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent text-sm";
 
     if (question.type === "select" && question.options) {
       return (
@@ -119,10 +119,10 @@ const Questions1To5Section = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white">
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold text-gray-800 mb-2">
-          QUESTIONS 1 TO 5
+    <div className="bg-white">
+      <div className="mb-5">
+        <h2 className="text-lg font-semibold text-gray-800 mb-2">
+          PERSONAL DETAILS FOR HOMESTAY APPLİCATİON
         </h2>
       </div>
 
@@ -136,20 +136,20 @@ const Questions1To5Section = () => {
                   index % 2 === 0 ? "bg-gray-50" : "bg-white"
                 } hover:bg-gray-100 transition-colors`}
               >
-                <td className="px-4 py-3 text-sm font-medium text-gray-700 w-1/2 border-r border-gray-200">
+                <td className="px-3.5 py-2 text-xs font-medium text-gray-700 w-1/2 border-r border-gray-200">
                   {question.label}
                 </td>
-                <td className="px-4 py-3 w-1/2">
+                <td className="px-3.5 py-2 w-1/2">
                   <div className="flex items-center gap-3">
                     {question.isInput ? (
                       <>
-                        <div className="w-6 h-6 bg-teal-500 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">
+                        <div className="w-5 h-5 bg-teal-500 text-white rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0">
                           {question.inputId}
                         </div>
                         <div className="flex-1">{renderInput(question)}</div>
                       </>
                     ) : (
-                      <span className="text-sm text-gray-800">
+                      <span className="text-xs text-gray-800">
                         {question.value}
                       </span>
                     )}

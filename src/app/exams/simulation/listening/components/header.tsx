@@ -118,13 +118,13 @@ const Header = ({ initialTime = 32 * 60, onSubmit }: HeaderProps) => {
   };
 
   return (
-    <div className="bg-white border-b border-gray-200 px-6 py-4 sticky top-0 z-50">
+    <div className="bg-white border-b border-gray-200 px-4 py-2 sticky top-0 z-50">
       <div className="flex items-center justify-between">
         {/* Left Icon */}
         <div className="flex items-center">
-          <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
+          <div className="w-6 h-6 bg-blue-600 rounded flex items-center justify-center">
             <svg
-              className="w-5 h-5 text-white"
+              className="w-4 h-4 text-white"
               fill="currentColor"
               viewBox="0 0 24 24"
             >
@@ -135,9 +135,9 @@ const Header = ({ initialTime = 32 * 60, onSubmit }: HeaderProps) => {
 
         {/* Center - Countdown Timer */}
         <div className="flex items-center space-x-2">
-          <div className="flex items-center justify-center w-8 h-8">
+          <div className="flex items-center justify-center w-6 h-6">
             <svg
-              className="w-6 h-6 text-teal-500"
+              className="w-4 h-4 text-teal-500"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -159,15 +159,15 @@ const Header = ({ initialTime = 32 * 60, onSubmit }: HeaderProps) => {
             </svg>
           </div>
           <div className="flex items-baseline space-x-1">
-            <span className="text-2xl font-bold text-teal-500">
+            <span className="text-lg font-bold text-teal-500">
               {Math.floor(timeRemaining / 60)}
             </span>
-            <span className="text-lg font-medium text-teal-500">:</span>
-            <span className="text-2xl font-bold text-teal-500">
+            <span className="text-sm font-medium text-teal-500">:</span>
+            <span className="text-lg font-bold text-teal-500">
               {String(timeRemaining % 60).padStart(2, "0")}
             </span>
           </div>
-          <span className="text-sm text-gray-500 font-medium">
+          <span className="text-xs text-gray-500 font-medium">
             minutes remaining
           </span>
         </div>
@@ -177,11 +177,11 @@ const Header = ({ initialTime = 32 * 60, onSubmit }: HeaderProps) => {
           {/* Expand/Collapse Toggle */}
           <button
             onClick={toggleExpand}
-            className="p-2 hover:bg-gray-100 rounded transition-colors cursor-pointer"
+            className="p-1.5 hover:bg-gray-100 rounded transition-colors cursor-pointer"
             title={isExpanded ? "Collapse controls" : "Expand controls"}
           >
             <svg
-              className={`w-5 h-5 text-gray-600 transition-transform duration-200 ${
+              className={`w-4 h-4 text-gray-600 transition-transform duration-200 ${
                 isExpanded ? "rotate-180" : ""
               }`}
               fill="none"
@@ -210,11 +210,11 @@ const Header = ({ initialTime = 32 * 60, onSubmit }: HeaderProps) => {
               {/* Play/Pause Button */}
               <button
                 onClick={togglePlayPause}
-                className="p-2 hover:bg-gray-100 rounded transition-colors"
+                className="p-1.5 hover:bg-gray-100 rounded transition-colors"
                 title={isPlaying ? "Pause audio" : "Play audio"}
               >
                 <svg
-                  className="w-5 h-5 text-gray-600"
+                  className="w-4 h-4 text-gray-600"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                 >
@@ -228,7 +228,7 @@ const Header = ({ initialTime = 32 * 60, onSubmit }: HeaderProps) => {
 
               {/* Volume Control */}
               <svg
-                className="w-5 h-5 text-gray-600"
+                className="w-4 h-4 text-gray-600"
                 fill="currentColor"
                 viewBox="0 0 24 24"
               >
@@ -240,7 +240,7 @@ const Header = ({ initialTime = 32 * 60, onSubmit }: HeaderProps) => {
                 max="100"
                 value={volume}
                 onChange={handleVolumeChange}
-                className="w-24 h-2 bg-teal-500 rounded-lg appearance-none cursor-pointer slider"
+                className="w-20 h-1 bg-teal-500 rounded-lg appearance-none cursor-pointer slider"
                 style={{
                   background: `linear-gradient(to right, #14b8a6 0%, #14b8a6 ${volume}%, #e5e7eb ${volume}%, #e5e7eb 100%)`,
                 }}
@@ -250,13 +250,13 @@ const Header = ({ initialTime = 32 * 60, onSubmit }: HeaderProps) => {
             {/* Fullscreen Icon */}
             <button
               onClick={toggleFullscreen}
-              className={`p-2 hover:bg-gray-100 rounded transition-colors ${
+              className={`p-1.5 hover:bg-gray-100 rounded transition-colors ${
                 isFullscreen ? "bg-teal-50 text-teal-600" : "text-gray-600"
               }`}
               title={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
             >
               <svg
-                className="w-5 h-5"
+                className="w-4 h-4"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -280,9 +280,9 @@ const Header = ({ initialTime = 32 * 60, onSubmit }: HeaderProps) => {
             </button>
 
             {/* Notes Icon */}
-            <button className="p-2 hover:bg-gray-100 rounded transition-colors">
+            <button className="p-1.5 hover:bg-gray-100 rounded transition-colors">
               <svg
-                className="w-5 h-5 text-gray-600"
+                className="w-4 h-4 text-gray-600"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -300,9 +300,9 @@ const Header = ({ initialTime = 32 * 60, onSubmit }: HeaderProps) => {
           {/* Submit Button - Always Visible */}
           <Button
             variant="secondary"
-            size="md"
+            size="sm"
             onClick={handleSubmit}
-            className="bg-teal-500 hover:bg-teal-600 text-white px-6 py-2 rounded-full font-medium shadow-md hover:shadow-lg transition-all"
+            className="bg-teal-500 hover:bg-teal-600 text-white px-4 py-1.5 rounded-full font-medium shadow-md hover:shadow-lg transition-all"
             rightIcon={
               <svg
                 className="w-4 h-4"

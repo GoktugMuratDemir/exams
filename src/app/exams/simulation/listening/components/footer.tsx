@@ -11,15 +11,15 @@ const Footer: React.FC = () => {
   const part3AnsweredQuestions = 0;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg">
-      <div className="max-w-4xl mx-auto flex justify-between items-center">
-        <div className="flex items-center space-x-4 border border-[#14b8a6] rounded-lg p-2">
-          <span className="font-bold text-gray-800">Part 1</span>
+    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-2 shadow-sm">
+      <div className="max-w-5xl mx-auto flex justify-between items-center">
+        <div className="flex items-center space-x-2 border border-[#14b8a6] rounded-md p-1">
+          <span className="font-semibold text-gray-800 text-xs">Part 1</span>
           <div className="flex space-x-1">
             {part1Questions.slice(0, 10).map((questionNum) => (
               <button
                 key={questionNum}
-                className="flex items-center justify-center w-6 h-6 rounded-full bg-[#14b8a6] text-white text-sm hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-[#14b8a6] focus:ring-opacity-50"
+                className="flex items-center justify-center w-5 h-5 rounded-full bg-[#14b8a6] text-white text-[10px] hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-[#14b8a6] focus:ring-opacity-50"
                 onClick={() => console.log(`Question ${questionNum} clicked`)}
               >
                 {questionNum}
@@ -28,11 +28,11 @@ const Footer: React.FC = () => {
           </div>
         </div>
 
-        <div className="text-gray-800 font-bold">
+        <div className="text-gray-800 font-semibold text-xs">
           Part 2: {part2AnsweredQuestions} of {part2TotalQuestions} questions
         </div>
 
-        <div className="text-gray-800 font-bold">
+        <div className="text-gray-800 font-semibold text-xs">
           Part 3: {part3AnsweredQuestions} of {part3TotalQuestions} questions
         </div>
       </div>

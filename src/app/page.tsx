@@ -2,13 +2,13 @@ import Card from "./exams/components/ui/card";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 p-8">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 p-4">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-bold text-slate-800 dark:text-slate-100 mb-8 text-center">
+        <h1 className="text-3xl font-bold text-slate-800 dark:text-slate-100 mb-3 text-center">
           Sınav Yönetim Sistemi
         </h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-3.5">
           <Card
             title="Sınav Oluştur"
             subtitle="Yeni bir sınav oluşturun"
@@ -38,7 +38,7 @@ export default function Home() {
             subtitle="Gerçek zamanlı sınav deneyimi"
           >
             <p>Öğrenciler için gerçekçi sınav ortamı sağlayın.</p>
-            <div className="mt-4">
+            <div className="mt-3">
               <a
                 href="/exams/simulation"
                 className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"

@@ -32,33 +32,33 @@ const Questions6Section = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white">
+    <div className="bg-white">
       {/* Question Header */}
-      <div className="mb-8">
-        <h2 className="text-3xl font-bold text-cyan-500 mb-4">Question 6</h2>
+      <div className="mb-6">
+        <h2 className="text-xl font-bold text-cyan-500 mb-3">Question 6</h2>
 
         {/* Instructions */}
-        <p className="text-lg text-gray-700 mb-2">
-          Mark <span className="text-red-500 font-bold text-xl">TWO</span>{" "}
-          letter that represent the correct answer.
+        <p className="text-sm text-gray-700 mb-2">
+          Mark <span className="text-red-500 font-bold">TWO</span> letter that
+          represent the correct answer.
         </p>
 
         {/* Question Text */}
-        <p className="text-lg text-gray-700 mb-6">
+        <p className="text-sm text-gray-700 mb-4">
           Which kind of family does the girls prefer?
         </p>
       </div>
 
       {/* Options */}
-      <div className="space-y-4">
+      <div className="space-y-3.5">
         {options.map((option) => (
           <div
             key={option.id}
-            className="flex items-center gap-4 p-4 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer"
+            className="flex items-center gap-3 p-2.5 hover:bg-gray-50 rounded-lg transition-colors cursor-pointer"
             onClick={() => handleOptionToggle(option.id)}
           >
             {/* Option Letter Circle */}
-            <div className="w-10 h-10 bg-gray-300 text-gray-700 rounded-full flex items-center justify-center text-lg font-bold flex-shrink-0">
+            <div className="w-8 h-8 bg-gray-300 text-gray-700 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
               {option.id}
             </div>
 
@@ -73,7 +73,7 @@ const Questions6Section = () => {
               >
                 {selectedAnswers.includes(option.id) && (
                   <svg
-                    className="w-4 h-4 text-white"
+                    className="w-3 h-3 text-white"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
@@ -88,7 +88,7 @@ const Questions6Section = () => {
             </div>
 
             {/* Option Text */}
-            <p className="text-lg text-gray-700 flex-1 select-none">
+            <p className="text-sm text-gray-700 flex-1 select-none">
               {option.text}
             </p>
           </div>
@@ -96,7 +96,7 @@ const Questions6Section = () => {
       </div>
 
       {/* Selection Counter */}
-      <div className="mt-6 text-sm text-gray-500">
+      <div className="mt-4 text-xs text-gray-500">
         Selected: {selectedAnswers.length}/2
         {selectedAnswers.length === 2 && (
           <span className="ml-2 text-green-600 font-medium">

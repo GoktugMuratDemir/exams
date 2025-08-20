@@ -73,11 +73,11 @@ const Questions7To10Section = () => {
 
   const getAnswerWithBlank = (question: Question) => {
     return (
-      <div className="text-lg text-gray-700 leading-relaxed">
+      <div className="text-sm text-gray-700 leading-relaxed">
         <div className="flex items-center gap-2 flex-wrap">
           <span className="flex-shrink-0">{question.beforeInput}</span>
           <div className="flex items-center gap-2 flex-shrink-0">
-            <div className="w-10 h-10 bg-cyan-500 text-white rounded-full flex items-center justify-center text-lg font-bold">
+            <div className="w-8 h-8 bg-cyan-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
               {question.id}
             </div>
             <input
@@ -85,7 +85,7 @@ const Questions7To10Section = () => {
               value={answers[question.id]}
               onChange={(e) => handleAnswerChange(question.id, e.target.value)}
               placeholder={question.placeholder}
-              className="min-w-[200px] max-w-[300px] px-3 py-2 border-2 border-gray-300 rounded-lg focus:border-cyan-400 focus:outline-none text-lg"
+              className="min-w-[220px] max-w-[360px] px-3 py-2 border border-gray-300 rounded-lg focus:border-cyan-400 focus:outline-none text-sm"
               maxLength={50}
             />
           </div>
@@ -98,16 +98,16 @@ const Questions7To10Section = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white">
+    <div className="bg-white">
       {/* Question Header */}
-      <div className="mb-8">
-        <h2 className="text-3xl font-bold text-cyan-500 mb-4">Question 7-10</h2>
+      <div className="mb-6">
+        <h2 className="text-xl font-bold text-cyan-500 mb-3">Question 7-10</h2>
 
         {/* Instructions */}
-        <div className="bg-gray-50 p-4 rounded-lg mb-6">
-          <p className="text-lg text-gray-700 mb-2">
+        <div className="bg-gray-50 p-3.5 rounded-lg mb-3.5">
+          <p className="text-sm text-gray-700 mb-1">
             Fill in the blanks with{" "}
-            <span className="text-red-500 font-bold text-xl">
+            <span className="text-red-500 font-bold">
               NO MORE THAN THREE WORDS
             </span>{" "}
             for each answer.
@@ -116,15 +116,15 @@ const Questions7To10Section = () => {
       </div>
 
       {/* Questions */}
-      <div className="space-y-8">
+      <div className="space-y-5">
         {questions.map((question) => (
-          <div key={question.id} className="p-6 bg-gray-50 rounded-lg">
+          <div key={question.id} className="p-4 bg-gray-50 rounded-lg">
             {/* Question Content */}
-            <div className="mb-4">{getAnswerWithBlank(question)}</div>
+            <div className="mb-3">{getAnswerWithBlank(question)}</div>
 
             {/* Word count warning */}
             {getWordCount(answers[question.id]) > 3 && (
-              <div className="mt-2 text-red-500 text-sm font-medium flex items-center gap-2">
+              <div className="mt-2 text-red-500 text-xs font-medium flex items-center gap-2">
                 <svg
                   className="w-4 h-4"
                   fill="currentColor"
@@ -143,7 +143,7 @@ const Questions7To10Section = () => {
             {/* Answer validation */}
             {answers[question.id] &&
               getWordCount(answers[question.id]) <= 3 && (
-                <div className="mt-2 text-green-600 text-sm font-medium flex items-center gap-2">
+                <div className="mt-2 text-green-600 text-xs font-medium flex items-center gap-2">
                   <svg
                     className="w-4 h-4"
                     fill="currentColor"
@@ -164,14 +164,14 @@ const Questions7To10Section = () => {
       </div>
 
       {/* Progress Summary */}
-      <div className="mt-8 p-4 bg-cyan-50 rounded-lg">
-        <h3 className="text-lg font-semibold text-cyan-700 mb-2">
+      <div className="mt-6 p-4 bg-cyan-50 rounded-lg">
+        <h3 className="text-sm font-semibold text-cyan-700 mb-2">
           Progress Summary
         </h3>
         <div className="flex gap-4 flex-wrap">
           {questions.map((question) => (
             <div key={question.id} className="flex items-center gap-2">
-              <span className="text-sm text-gray-600">Q{question.id}:</span>
+              <span className="text-xs text-gray-600">Q{question.id}:</span>
               <div
                 className={`w-4 h-4 rounded-full ${
                   answers[question.id] &&
@@ -185,7 +185,7 @@ const Questions7To10Section = () => {
             </div>
           ))}
         </div>
-        <p className="text-sm text-gray-600 mt-2">
+        <p className="text-xs text-gray-600 mt-2">
           Completed:{" "}
           {
             Object.values(answers).filter(
