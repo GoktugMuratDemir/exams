@@ -18,6 +18,7 @@ const categories = [
       "Please watch the video guidance below and confirm you completely understand before taking the Listening test.",
     videoUrl:
       "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+    route: "/exams/simulation/listening",
   },
   {
     id: "reading",
@@ -28,11 +29,12 @@ const categories = [
         <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />
       </svg>
     ),
-    isActive: false,
+    isActive: true,
     description:
       "Test your reading comprehension skills with academic and general training passages.",
     videoUrl:
       "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+    route: "/exams/simulation/reading",
   },
   {
     id: "writing",
@@ -48,6 +50,7 @@ const categories = [
       "Practice your writing skills with task 1 and task 2 exercises.",
     videoUrl:
       "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+    route: "/exams/simulation/writing",
   },
   {
     id: "speaking",
@@ -63,6 +66,7 @@ const categories = [
       "Improve your speaking skills through interactive conversation practice.",
     videoUrl:
       "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
+    route: "/exams/simulation/speaking",
   },
 ];
 
@@ -77,12 +81,10 @@ export default function SimulationPage() {
     isActive: boolean;
     description: string;
     videoUrl: string;
+    route: string;
   }) => {
-    if (item.id === "listening") {
-      alert("IELTS Listening Test başlatılıyor...");
-    } else {
-      alert(`${item.title} will be available soon!`);
-    }
+    // Navigate to the specified route
+    router.push(item.route);
   };
 
   const handleExit = () => {

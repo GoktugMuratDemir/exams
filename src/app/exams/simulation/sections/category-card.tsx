@@ -11,6 +11,7 @@ interface CategoryItem {
   isActive: boolean;
   videoUrl: string;
   description: string;
+  route: string;
 }
 
 interface CategoryCardProps {
@@ -109,7 +110,23 @@ const CategoryCard = ({ items, onItemSelect }: CategoryCardProps) => {
     if (videoElement) {
       const current = videoElement.currentTime;
       const duration = videoElement.duration;
+
+      // Update current time always
       updateVideoState(categoryId, { currentTime: current });
+
+      // If duration wasn't set before, try to set it now
+      const currentState = videoStates[categoryId];
+      if (
+        (!currentState.videoDuration || currentState.videoDuration === 0) &&
+        duration &&
+        !isNaN(duration) &&
+        isFinite(duration)
+      ) {
+        updateVideoState(categoryId, {
+          videoDuration: duration,
+          currentTime: current,
+        });
+      }
 
       // Video tam %100 bittiğinde watched olarak işaretle
       if (duration > 0 && current >= duration - 0.1) {
@@ -121,24 +138,84 @@ const CategoryCard = ({ items, onItemSelect }: CategoryCardProps) => {
   const handleLoadedMetadata = (categoryId: string) => {
     const videoElement = videoRefs.current[categoryId];
     if (videoElement) {
-      updateVideoState(categoryId, {
-        videoDuration: videoElement.duration,
-        isLoading: false,
-      });
+      // Ensure video is ready and visible
+      videoElement.style.visibility = "visible";
+
+      // Force duration update
+      const duration = videoElement.duration;
+      console.log(`Video ${categoryId} duration:`, duration);
+
+      if (duration && !isNaN(duration) && isFinite(duration)) {
+        updateVideoState(categoryId, {
+          videoDuration: duration,
+          isLoading: false,
+        });
+      } else {
+        // If duration is not available, try to get it later
+        setTimeout(() => {
+          const newDuration = videoElement.duration;
+          if (newDuration && !isNaN(newDuration) && isFinite(newDuration)) {
+            updateVideoState(categoryId, {
+              videoDuration: newDuration,
+              isLoading: false,
+            });
+          }
+        }, 500);
+      }
     }
   };
 
-  const handlePlayPause = (categoryId: string) => {
+  const handlePlayPause = async (categoryId: string) => {
     const videoElement = videoRefs.current[categoryId];
     const currentState = videoStates[categoryId];
 
     if (videoElement) {
-      if (currentState.isPlaying) {
-        videoElement.pause();
-      } else {
-        videoElement.play().catch(console.error);
+      try {
+        if (currentState.isPlaying) {
+          videoElement.pause();
+          updateVideoState(categoryId, { isPlaying: false });
+        } else {
+          // Force all visibility styles before playing
+          videoElement.style.display = "block";
+          videoElement.style.visibility = "visible";
+          videoElement.style.opacity = "1";
+          videoElement.style.position = "absolute";
+          videoElement.style.top = "0";
+          videoElement.style.left = "0";
+          videoElement.style.width = "100%";
+          videoElement.style.height = "100%";
+          videoElement.style.objectFit = "cover";
+          videoElement.style.zIndex = "1";
+          videoElement.style.backgroundColor = "#000";
+
+          // Force a layout recalculation
+          void videoElement.offsetHeight;
+
+          // Ensure video is loaded
+          if (videoElement.readyState < 3) {
+            videoElement.load();
+          }
+
+          await videoElement.play();
+          updateVideoState(categoryId, { isPlaying: true });
+        }
+      } catch (error) {
+        console.error("Video play failed:", error);
+        // Try to reload and play again
+        try {
+          videoElement.load();
+          setTimeout(async () => {
+            try {
+              await videoElement.play();
+              updateVideoState(categoryId, { isPlaying: true });
+            } catch (retryError) {
+              console.error("Retry failed:", retryError);
+            }
+          }, 100);
+        } catch (loadError) {
+          console.error("Video load failed:", loadError);
+        }
       }
-      updateVideoState(categoryId, { isPlaying: !currentState.isPlaying });
     }
   };
 
@@ -160,24 +237,63 @@ const CategoryCard = ({ items, onItemSelect }: CategoryCardProps) => {
     const videoElement = videoRefs.current[categoryId];
     const currentState = videoStates[categoryId];
 
-    if (videoElement) {
+    if (videoElement && currentState.videoDuration > 0) {
       const rect = e.currentTarget.getBoundingClientRect();
       const pos = (e.clientX - rect.left) / rect.width;
       const newTime = pos * currentState.videoDuration;
-      videoElement.currentTime = newTime;
-      updateVideoState(categoryId, { currentTime: newTime });
+
+      // Ensure time is within bounds
+      const clampedTime = Math.max(
+        0,
+        Math.min(newTime, currentState.videoDuration)
+      );
+
+      console.log(`Seeking to: ${clampedTime} / ${currentState.videoDuration}`);
+
+      // Force all visibility styles
+      videoElement.style.display = "block";
+      videoElement.style.visibility = "visible";
+      videoElement.style.opacity = "1";
+      videoElement.style.position = "absolute";
+      videoElement.style.top = "0";
+      videoElement.style.left = "0";
+      videoElement.style.width = "100%";
+      videoElement.style.height = "100%";
+      videoElement.style.objectFit = "cover";
+      videoElement.style.zIndex = "1";
+
+      try {
+        videoElement.currentTime = clampedTime;
+        updateVideoState(categoryId, { currentTime: clampedTime });
+      } catch (error) {
+        console.error("Error setting currentTime:", error);
+      }
 
       // Progress bar ile video sonuna gidilirse watched olarak işaretle
       if (
         currentState.videoDuration > 0 &&
-        newTime >= currentState.videoDuration - 0.1
+        clampedTime >= currentState.videoDuration - 0.1
       ) {
         updateVideoState(categoryId, { videoWatched: true });
       }
+
+      // Force multiple repaints
+      void videoElement.offsetHeight; // Trigger reflow
+      requestAnimationFrame(() => {
+        videoElement.style.transform = "translateZ(0)"; // Force GPU acceleration
+        requestAnimationFrame(() => {
+          videoElement.style.transform = "";
+        });
+      });
+    } else {
+      console.warn(`Cannot seek - duration: ${currentState.videoDuration}`);
     }
   };
 
   const formatTime = (time: number) => {
+    if (!time || isNaN(time) || !isFinite(time)) {
+      return "0:00";
+    }
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
     return `${minutes}:${seconds.toString().padStart(2, "0")}`;
@@ -251,10 +367,26 @@ const CategoryCard = ({ items, onItemSelect }: CategoryCardProps) => {
               <div className="rounded-xl p-6 mb-6 bg-gray-50">
                 <div
                   className="relative bg-white rounded-xl overflow-hidden shadow-sm mb-6"
-                  style={{ aspectRatio: "16/9" }}
+                  style={{
+                    aspectRatio: "16/9",
+                    position: "relative",
+                    zIndex: 0,
+                  }}
                 >
-                  <div className="absolute inset-0 flex flex-col">
-                    <div className="flex-1 flex items-center justify-center relative bg-gradient-to-br from-gray-100 to-gray-200">
+                  <div
+                    className="absolute inset-0 flex flex-col"
+                    style={{ zIndex: 0 }}
+                  >
+                    <div
+                      className="flex-1 flex items-center justify-center relative bg-gradient-to-br from-gray-100 to-gray-200 cursor-pointer"
+                      style={{ position: "relative", zIndex: 0 }}
+                      onClick={(e) => {
+                        if (item.isActive && !currentState.isLoading) {
+                          e.stopPropagation();
+                          handlePlayPause(item.id);
+                        }
+                      }}
+                    >
                       {/* Video Content or Placeholder - only show tutorial info for disabled items */}
                       {!item.isActive && (
                         <div className="absolute inset-0 flex items-center justify-center">
@@ -305,7 +437,10 @@ const CategoryCard = ({ items, onItemSelect }: CategoryCardProps) => {
 
                       {/* Loading indicator for active items */}
                       {item.isActive && currentState.isLoading && (
-                        <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center z-20">
+                        <div
+                          className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center z-[20]"
+                          style={{ zIndex: 20 }}
+                        >
                           <div
                             className="bg-opacity-20 rounded-full p-8"
                             style={{ backgroundColor: colors.primary }}
@@ -331,7 +466,8 @@ const CategoryCard = ({ items, onItemSelect }: CategoryCardProps) => {
                               e.stopPropagation();
                               handlePlayPause(item.id);
                             }}
-                            className="absolute inset-0 z-10 flex items-center justify-center bg-black bg-opacity-20 hover:bg-opacity-30 transition-all duration-300"
+                            className="absolute inset-0 z-[10] flex items-center justify-center bg-black bg-opacity-20 hover:bg-opacity-30 transition-all duration-300"
+                            style={{ zIndex: 10 }}
                           >
                             <div className="bg-white bg-opacity-95 rounded-full p-6 hover:bg-opacity-100 transition-all duration-300 shadow-lg">
                               <svg
@@ -350,27 +486,171 @@ const CategoryCard = ({ items, onItemSelect }: CategoryCardProps) => {
                       {item.isActive && (
                         <video
                           ref={(el) => {
-                            videoRefs.current[item.id] = el;
+                            if (el) {
+                              videoRefs.current[item.id] = el;
+                              // Force immediate visibility setup
+                              el.style.position = "absolute";
+                              el.style.top = "0";
+                              el.style.left = "0";
+                              el.style.width = "100%";
+                              el.style.height = "100%";
+                              el.style.objectFit = "cover";
+                              el.style.zIndex = "1";
+                              el.style.backgroundColor = "#000";
+                            }
                           }}
-                          className="absolute inset-0 w-full h-full object-cover"
+                          className="absolute inset-0 w-full h-full object-cover z-[1]"
                           onEnded={() => handleVideoEnded(item.id)}
                           onTimeUpdate={() => handleTimeUpdate(item.id)}
                           onLoadedMetadata={() => handleLoadedMetadata(item.id)}
+                          onDurationChange={(e) => {
+                            // Duration changed event
+                            const videoElement = e.target as HTMLVideoElement;
+                            const duration = videoElement.duration;
+                            if (
+                              duration &&
+                              !isNaN(duration) &&
+                              isFinite(duration)
+                            ) {
+                              updateVideoState(item.id, {
+                                videoDuration: duration,
+                              });
+                              console.log(
+                                `Duration changed for ${item.id}:`,
+                                duration
+                              );
+                            }
+                          }}
                           onLoadStart={() =>
                             updateVideoState(item.id, { isLoading: true })
                           }
-                          onCanPlay={() =>
-                            updateVideoState(item.id, { isLoading: false })
-                          }
-                          onPlay={() =>
-                            updateVideoState(item.id, { isPlaying: true })
-                          }
+                          onCanPlay={() => {
+                            updateVideoState(item.id, { isLoading: false });
+                            // Force visibility when ready to play
+                            const videoElement = videoRefs.current[item.id];
+                            if (videoElement) {
+                              videoElement.style.display = "block";
+                              videoElement.style.visibility = "visible";
+                              videoElement.style.opacity = "1";
+
+                              // Check duration again
+                              const duration = videoElement.duration;
+                              if (
+                                duration &&
+                                !isNaN(duration) &&
+                                isFinite(duration)
+                              ) {
+                                updateVideoState(item.id, {
+                                  videoDuration: duration,
+                                });
+                              }
+                            }
+                          }}
+                          onCanPlayThrough={() => {
+                            // Video can play through without stopping
+                            const videoElement = videoRefs.current[item.id];
+                            if (videoElement) {
+                              const duration = videoElement.duration;
+                              if (
+                                duration &&
+                                !isNaN(duration) &&
+                                isFinite(duration)
+                              ) {
+                                updateVideoState(item.id, {
+                                  videoDuration: duration,
+                                  isLoading: false,
+                                });
+                              }
+                            }
+                          }}
+                          onPlay={() => {
+                            updateVideoState(item.id, { isPlaying: true });
+                            // Ensure video is visible when playing
+                            const videoElement = videoRefs.current[item.id];
+                            if (videoElement) {
+                              videoElement.style.display = "block";
+                              videoElement.style.visibility = "visible";
+                              videoElement.style.opacity = "1";
+                              videoElement.style.zIndex = "1";
+                            }
+                          }}
                           onPause={() =>
                             updateVideoState(item.id, { isPlaying: false })
                           }
+                          onLoadedData={() => {
+                            // Video loaded and ready to play
+                            const videoElement = videoRefs.current[item.id];
+                            if (videoElement) {
+                              videoElement.style.display = "block";
+                              videoElement.style.visibility = "visible";
+                              videoElement.style.opacity = "1";
+
+                              // Force duration check
+                              const duration = videoElement.duration;
+                              if (
+                                duration &&
+                                !isNaN(duration) &&
+                                isFinite(duration)
+                              ) {
+                                updateVideoState(item.id, {
+                                  videoDuration: duration,
+                                });
+                              }
+                            }
+                          }}
+                          onWaiting={() => {
+                            // Video is buffering
+                            updateVideoState(item.id, { isLoading: true });
+                          }}
+                          onPlaying={() => {
+                            // Video started playing
+                            updateVideoState(item.id, {
+                              isLoading: false,
+                              isPlaying: true,
+                            });
+                            const videoElement = videoRefs.current[item.id];
+                            if (videoElement) {
+                              videoElement.style.display = "block";
+                              videoElement.style.visibility = "visible";
+                              videoElement.style.opacity = "1";
+                            }
+                          }}
+                          onSeeking={() => {
+                            // User is seeking
+                            const videoElement = videoRefs.current[item.id];
+                            if (videoElement) {
+                              updateVideoState(item.id, {
+                                currentTime: videoElement.currentTime,
+                              });
+                            }
+                          }}
+                          onSeeked={() => {
+                            // Seeking completed
+                            const videoElement = videoRefs.current[item.id];
+                            if (videoElement) {
+                              updateVideoState(item.id, {
+                                currentTime: videoElement.currentTime,
+                              });
+                            }
+                          }}
                           controls={false}
-                          preload="metadata"
-                          poster="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjQ1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjlmYWZiIi8+CiAgPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIzNiIgZmlsbD0iIzY5NzU4MyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPklFTFRTIFR1dG9yaWFsPC90ZXh0Pgo8L3N2Zz4="
+                          preload="auto"
+                          playsInline
+                          webkit-playsinline="true"
+                          muted={currentState.volume === 0}
+                          style={{
+                            display: "block",
+                            visibility: "visible",
+                            opacity: 1,
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                            zIndex: 1,
+                            backgroundColor: "#000",
+                          }}
                         >
                           <source src={item.videoUrl} type="video/mp4" />
                           Video tarayıcınız tarafından desteklenmiyor.
@@ -389,7 +669,7 @@ const CategoryCard = ({ items, onItemSelect }: CategoryCardProps) => {
                             e.stopPropagation();
                             handlePlayPause(item.id);
                           }}
-                          className="text-white hover:text-gray-300 mr-4"
+                          className="text-white hover:text-gray-300 mr-4 cursor-pointer"
                         >
                           {currentState.isPlaying ? (
                             <svg
@@ -416,10 +696,16 @@ const CategoryCard = ({ items, onItemSelect }: CategoryCardProps) => {
                         </span>
 
                         <div
-                          className="flex-1 mx-4 cursor-pointer"
+                          className={`flex-1 mx-4 ${
+                            currentState.videoDuration > 0
+                              ? "cursor-pointer"
+                              : "cursor-not-allowed"
+                          }`}
                           onClick={(e) => {
                             e.stopPropagation();
-                            handleProgressClick(item.id, e);
+                            if (currentState.videoDuration > 0) {
+                              handleProgressClick(item.id, e);
+                            }
                           }}
                         >
                           <div className="bg-gray-600 h-1 rounded-full overflow-hidden hover:h-2 transition-all duration-200">
@@ -427,9 +713,17 @@ const CategoryCard = ({ items, onItemSelect }: CategoryCardProps) => {
                               className="bg-white h-full transition-all duration-300"
                               style={{
                                 width: `${
-                                  (currentState.currentTime /
-                                    currentState.videoDuration) *
-                                  100
+                                  currentState.videoDuration > 0
+                                    ? Math.min(
+                                        100,
+                                        Math.max(
+                                          0,
+                                          (currentState.currentTime /
+                                            currentState.videoDuration) *
+                                            100
+                                        )
+                                      )
+                                    : 0
                                 }%`,
                               }}
                             ></div>
@@ -442,7 +736,7 @@ const CategoryCard = ({ items, onItemSelect }: CategoryCardProps) => {
                               e.stopPropagation();
                               handleVolumeChange(item.id);
                             }}
-                            className="text-white hover:text-gray-300"
+                            className="text-white hover:text-gray-300 cursor-pointer"
                           >
                             {currentState.volume > 0 ? (
                               <svg
@@ -464,7 +758,7 @@ const CategoryCard = ({ items, onItemSelect }: CategoryCardProps) => {
                           </button>
                           <button
                             onClick={(e) => e.stopPropagation()}
-                            className="text-white hover:text-gray-300"
+                            className="text-white hover:text-gray-300 cursor-pointer"
                           >
                             <svg
                               className="w-5 h-5"
@@ -476,7 +770,7 @@ const CategoryCard = ({ items, onItemSelect }: CategoryCardProps) => {
                           </button>
                           <button
                             onClick={(e) => e.stopPropagation()}
-                            className="text-white hover:text-gray-300"
+                            className="text-white hover:text-gray-300 cursor-pointer"
                           >
                             <svg
                               className="w-5 h-5"
@@ -493,7 +787,10 @@ const CategoryCard = ({ items, onItemSelect }: CategoryCardProps) => {
                     {/* Static controls bar for disabled items */}
                     {!item.isActive && (
                       <div className="bg-gray-300 h-12 flex items-center px-4 relative opacity-60">
-                        <button className="text-gray-600 mr-4" disabled>
+                        <button
+                          className="text-gray-600 mr-4 cursor-pointer"
+                          disabled
+                        >
                           <svg
                             className="w-5 h-5"
                             fill="currentColor"
@@ -511,7 +808,10 @@ const CategoryCard = ({ items, onItemSelect }: CategoryCardProps) => {
                           </div>
                         </div>
                         <div className="flex items-center space-x-3">
-                          <button className="text-gray-600" disabled>
+                          <button
+                            className="text-gray-600 cursor-pointer"
+                            disabled
+                          >
                             <svg
                               className="w-5 h-5"
                               fill="currentColor"
@@ -520,7 +820,10 @@ const CategoryCard = ({ items, onItemSelect }: CategoryCardProps) => {
                               <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
                             </svg>
                           </button>
-                          <button className="text-gray-600" disabled>
+                          <button
+                            className="text-gray-600 cursor-pointer"
+                            disabled
+                          >
                             <svg
                               className="w-5 h-5"
                               fill="currentColor"
@@ -529,7 +832,10 @@ const CategoryCard = ({ items, onItemSelect }: CategoryCardProps) => {
                               <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" />
                             </svg>
                           </button>
-                          <button className="text-gray-600" disabled>
+                          <button
+                            className="text-gray-600 cursor-pointer"
+                            disabled
+                          >
                             <svg
                               className="w-5 h-5"
                               fill="currentColor"
