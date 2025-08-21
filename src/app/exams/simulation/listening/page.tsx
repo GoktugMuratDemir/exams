@@ -18,7 +18,7 @@ export default function ListeningPage() {
       <Header onSubmit={handleSubmit} />
 
       {/* Main Content Area */}
-      <div className="p-4">
+      <div className="p-4 mb-12">
         <div className="max-w-7xl mx-auto">
           <div className="bg-white rounded-2xl shadow p-4">
             {/* Part 1 Header */}
